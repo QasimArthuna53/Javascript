@@ -1,0 +1,87 @@
+body,
+html {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background-color: rgb(37, 36, 36);
+}
+
+.gridContainer {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(6, 125px);
+    gap: 20px;
+}
+
+.container {
+    transform-style: preserve-3d;
+    position: relative;
+    width: 125px;
+    height: 125px;
+    transition: all 1s ease;
+}
+
+.cardFront {
+    position: absolute;
+    background-image: linear-gradient(123deg, rgb(108, 91, 222), rgb(54, 39, 152));
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    backface-visibility: hidden;
+    border: 3px solid rgb(255, 255, 255);
+}
+
+.cardBack {
+    position: absolute;
+    background-size: cover;
+    background-color: rgb(255, 255, 255);
+    backface-visibility: hidden;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    transform: rotateY(180deg);
+}
+
+.gameContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.points {
+    display: flex;
+    height: 100%;
+    width: 30%;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.flexCenterer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score {
+    width: 200px;
+    text-transform: uppercase;
+    font-family: 'alef';
+    font-size: 20px;
+    font-weight: bolder;
+    color: white;
+    user-select: none;
+}
+
+.score p {
+    display: inline;
+    margin-left: 30px;
+    padding: 5px 20px;
+    font-size: 25px;
+    border-radius: 10px;
+    background-image: linear-gradient(123deg, rgb(108, 91, 222), rgb(54, 39, 152));
+}

@@ -1,0 +1,184 @@
+<html>
+<style>
+    body,
+    html,
+    .cardFront,
+    .cardBack,
+    .gameContainer,
+    .points {
+        height: 100%;
+    }
+
+    body,
+    html,
+    .cardFront,
+    .cardBack,
+    .gameContainer {
+        width: 100%;
+    }
+
+    .cardFront,
+    .cardBack {
+        position: absolute;
+        border-radius: 20px;
+        backface-visibility: hidden;
+    }
+
+    .cardFront,
+    .score p {
+        background-image: linear-gradient(123deg, rgb(108, 91, 222), rgb(54, 39, 152));
+    }
+
+    .gameContainer,
+    .points,
+    .flexCenterer {
+        display: flex;
+        align-items: center;
+    }
+
+    .gameContainer,
+    .flexCenterer {
+        justify-content: center;
+    }
+
+    body,
+    html {
+        padding: 0px;
+        margin: 0px;
+        background-color: rgb(37, 36, 36);
+    }
+
+    .gridContainer {
+        flex-grow: 1;
+        display: grid;
+        grid-template-columns: repeat(6, 125px);
+        gap: 20px;
+    }
+
+    .container {
+        transform-style: preserve-3d;
+        position: relative;
+        width: 125px;
+        height: 125px;
+        transition: all 1s ease 0s;
+    }
+
+    .cardBack {
+        background-size: cover;
+        background-color: rgb(255, 255, 255);
+        transform: rotateY(180deg);
+    }
+
+    .points {
+        width: 30%;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+
+    .score {
+        width: 200px;
+        text-transform: uppercase;
+        font-family: alef;
+        font-size: 20px;
+        font-weight: bolder;
+        color: white;
+        user-select: none;
+    }
+
+    .score p {
+        display: inline;
+        margin-left: 30px;
+        padding: 5px 20px;
+        font-size: 25px;
+        border-radius: 10px;
+    }
+
+    .cardFront {
+        border: 3px solid rgb(255, 255, 255)
+    }
+
+    .gameContainer {
+        flex-direction: row
+    }
+</style>
+
+<body>
+    <div class="gameContainer">
+        <div class="points">
+            <div class="score" id="score">
+                Score
+                <p>0</p>
+            </div>
+            <div class="score" id="moves">
+                Moves
+                <p>0</p>
+            </div>
+        </div>
+        <div class="flexCenterer">
+            <div class="gridContainer"></div>
+        </div>
+    </div>
+    <script>
+        const backgroundImageObject = new Map();
+        for (let i = 0; i < 12; i++)
+            backgroundImageObject.set("SVG/drawing" + i + ".svg", 0);
+        for (let i = 0; i < 24; i++) {
+            const containerDiv = document.createElement("div");
+            containerDiv.classList.add("container");
+            const cardFrontDiv = document.createElement("div");
+            cardFrontDiv.classList.add("cardFront");
+            containerDiv.appendChild(cardFrontDiv);
+            const cardBackDiv = document.createElement("div");
+            cardBackDiv.classList.add("cardBack");
+            while (true) {
+                let backgroundImagePath = "SVG/drawing" + Math.floor(Math.random() * 12) + ".svg";
+                let backgroundImageUsedTimes = backgroundImageObject.get(backgroundImagePath);
+                if (backgroundImageUsedTimes < 2) {
+                    backgroundImageObject.set(backgroundImagePath, ++backgroundImageUsedTimes);
+                    cardBackDiv.style.backgroundImage = "url(" + backgroundImagePath + ")";
+                    break;
+                }
+            }
+            containerDiv.appendChild(cardBackDiv);
+            document.querySelector(".gridContainer").appendChild(containerDiv);
+        }
+        const containerArray = document.getElementsByClassName("container");
+        let firstCardSelected, score = 0, moves = 0;
+        for (const container of containerArray) {
+            container.addEventListener("click", function (e) {
+                const parentNode = e.target.parentNode;
+                const currentBackgroundImage = e.target.nextSibling.style.backgroundImage;
+                parentNode.style.transform = "rotateY(180deg)";
+                if (firstCardSelected == undefined) {
+                    firstCardSelected = {
+                        parent: parentNode,
+                        image: currentBackgroundImage
+                    };
+                }
+                else if (firstCardSelected.image == currentBackgroundImage) {
+                    setTimeout(function () {
+                        firstCardSelected.parent.style.visibility = "hidden";
+                        parentNode.style.visibility = "hidden";
+                        let updateScore = score + 100;
+                        let id = setInterval(function () {
+                            document.querySelector("#score p").innerText = ++score;
+                            if (score == updateScore)
+                                clearInterval(id);
+                        }, 10);
+                        firstCardSelected = undefined;
+                    }, 100);
+                }
+                else {
+                    setTimeout(function () {
+                        firstCardSelected.parent.style.transform = "rotateY(360deg)";
+                        parentNode.style.transform = "rotateY(360deg)";
+                        document.querySelector("#moves p").innerText = ++moves;
+                        firstCardSelected = undefined;
+                    }, 1000);
+                }
+
+            });
+        }
+    </script>
+</body>
+</html>
