@@ -1,0 +1,123 @@
+<html>
+<style>
+    #before,
+    #after,
+    input::-webkit-slider-thumb {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+    }
+
+    input::-webkit-slider-thumb,
+    #beforeText,
+    #afterText {
+        opacity: 0;
+        transition-property: opacity;
+        transition-duration: 250ms;
+    }
+
+    #container:hover>input::-webkit-slider-thumb,
+    #container:hover>#beforeText,
+    #container:hover>#afterText {
+        opacity: 1;
+    }
+
+    #beforeText,
+    #afterText {
+        position: fixed;
+        top: 20px;
+        font-size: xx-large;
+        color: white;
+        background-color: blue;
+        padding: 20px;
+    }
+
+    #before,
+    #after,
+    input {
+        position: absolute;
+        height: inherit;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    input::-webkit-slider-thumb {
+        width: 80px;
+        background-image: url("CompareIcon.svg");
+        cursor: col-resize;
+    }
+
+    #before {
+        background-image: url("before.jpg");
+        left: 0px;
+    }
+
+    #after {
+        background-image: url("after.jpg");
+        left: 50%;
+    }
+
+    input {
+        outline-style: none;
+        background-color: transparent;
+    }
+
+    html,
+    body,
+    #container,
+    input::-webkit-slider-thumb {
+        height: 100%
+    }
+
+    #container,
+    #before,
+    #after,
+    input {
+        width: 100%
+    }
+
+    input::-webkit-slider-thumb,
+    input {
+        appearance: none
+    }
+
+    #before,
+    #after {
+        background-attachment: fixed
+    }
+
+    #beforeText {
+        left: 30px
+    }
+
+    #afterText {
+        right: 30px
+    }
+</style>
+
+<body>
+    <div id="container">
+        <div id="beforeText">Before</div>
+        <div id="afterText">After</div>
+        <div id="before"></div>
+        <div id="after"></div>
+        <input type="range" max="100" min="0" value="50">
+    </div>
+    <script>
+        document.querySelector("input").addEventListener("input", function () {
+            document.querySelector("#after").style.left = this.value + "%";
+        });
+        let container = document.querySelector("#container");
+        container.addEventListener("dblclick", async _ => await container.requestFullscreen());
+    </script>
+</body>
+
+</html>
