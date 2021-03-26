@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSS Compressor</title>
+  <link rel="icon" href="icon.png" type="image/x-icon">
+  <style>
+    body,
+    html,
+    .bg {
+      height: 100%;
+    }
+
+    body,
+    html,
+    .form-input,
+    .bg {
+      width: 100%;
+    }
+
+    body,
+    .tabsContainer {
+      display: flex;
+    }
+
+    .upperTabs,
+    span,
+    .bg {
+      text-transform: capitalize;
+    }
+
+    .line,
+    span,
+    .bg {
+      position: absolute;
+    }
+
+    .line,
+    .bg {
+      background-color: rgb(26, 115, 232);
+    }
+
+    #container,
+    .card {
+      background-color: rgb(255, 255, 255);
+      box-shadow: rgb(198, 205, 231) 11px 11px 48px -11px, rgba(255, 255, 255, 0.624) -11px -11px 48px;
+      width: 90%;
+      margin: 40px;
+      height: auto;
+    }
+
+    #container,
+    .card,
+    .bg {
+      border-radius: 4px;
+    }
+
+    label,
+    .card {
+      position: relative;
+    }
+
+    label,
+    a {
+      font-size: 1rem;
+    }
+
+    .form-input,
+    a {
+      padding: 13px 15px;
+      border-radius: 8px;
+    }
+
+    span,
+    .cardBody {
+      color: rgb(26, 115, 232);
+    }
+
+    a,
+    .bg {
+      color: white;
+    }
+
+    * {
+      font-family: Alef;
+      user-select: none;
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      padding: 0px;
+      margin: 0px;
+    }
+
+    body {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tabsContainer {
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgb(26, 115, 232);
+    }
+
+    .upperTabs {
+      flex: 1 1 0%;
+      padding: 5px 10px;
+      text-align: center;
+    }
+
+    .line {
+      height: 4px;
+      transition: width 750ms ease-in-out 0s, left 750ms ease-in-out 0s;
+    }
+
+    label {
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .form-input {
+      border: 2px solid rgb(26, 115, 232);
+      outline: 0px;
+      resize: none;
+    }
+
+    span {
+      top: -7px;
+      left: 10px;
+      font-size: 0.85rem;
+      padding: 0px 0.33rem;
+      background: rgb(255, 255, 255);
+      font-family: sans-serif;
+    }
+
+    a {
+      background: rgb(26, 115, 232);
+      outline: none;
+      width: auto;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .bg {
+      transition-duration: 1000ms;
+      padding: 10px;
+      clip-path: circle(50px at 100% 100%);
+      transition-property: clip-path;
+      bottom: 0px;
+      font-size: 1.5rem;
+    }
+
+    .cardBody {
+      padding: 30px;
+      font-weight: bolder;
+      font-size: 1.5em;
+    }
+
+    #container {
+      padding: 2rem
+    }
+
+    .bg:hover {
+      clip-path: circle(150% at 100% 100%)
+    }
+
+    pre {
+      transform: translateX(5%);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="container">
+    <label>
+      <textarea rows="20" class="form-input" id="code"></textarea>
+      <span>Code</span>
+    </label>
+    <label id="name">
+      <input class="form-input" type="text" id="codeName" placeholder="Output.css">
+      <span>File Name</span>
+    </label>
+    <a href="CSSCompressor.html" target="_blank">Group It!🍕🍔</a>
+  </div>
+
+  <div class="card">
+    <div class="cardBody">
+      Group CSS Properties And Selector
+    </div>
+    <div class="codeTabs">
+      <div class="tabsContainer">
+        <div class="upperTabs" content="div{
+width:20px;
+}">first.css</div>
+        <div class="upperTabs" content="span{
+width:20px;
+display:block;
+}">Second.css</div>
+        <div class="upperTabs" content="div,span{
+width:20px;
+}
+
+span{
+display:block;
+}">Output.css</div>
+        <div class="line"></div>
+      </div>
+      <pre>
+        </pre>
+    </div>
+    <div class="bg">
+      group all css properties and selectors with matching properties. which really reduces headache.👩‍🔧👨‍💻😱
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cardBody">
+      No Interference With Inline CSS
+    </div>
+    <div class="codeTabs">
+      <div class="tabsContainer">
+        <div class="upperTabs" content="div{
+width:20px;
+}">first.css</div>
+        <div class="upperTabs" content="<div style='width:30px'>">Index.html</div>
+        <div class="upperTabs" content="div{
+width:20px;
+}">Output.css</div>
+        <div class="line"></div>
+      </div>
+      <pre>
+        </pre>
+    </div>
+    <div class="bg">
+      No Interference With Inline CSS. which means specificity is maintained and no overriding of css rules.📏📐🖊
+    </div>
+  </div>
+  <script>
+    for (let i = 0; i < document.querySelectorAll(".card").length; i++) {
+      const selector = `.card:nth-child(${i + 2})`, line = document.querySelector(selector + " .line");
+      for (const items of document.querySelectorAll(selector + " .upperTabs"))
+        items.addEventListener("click", e => {
+          line.style.left = e.target.offsetLeft + "px";
+          line.style.width = e.target.offsetWidth + "px";
+          document.querySelector(selector + " pre").innerText = e.target.getAttribute("content");
+        });
+      document.querySelector(selector + " .upperTabs:nth-child(1)").click();
+    }
+    document.querySelector("a").addEventListener("click", _ => {
+      sessionStorage.setItem("css", document.querySelector("#code").value);
+      sessionStorage.setItem("fileName", document.querySelector("#codeName").value)
+    })
+  </script>
+</body>
+</html>

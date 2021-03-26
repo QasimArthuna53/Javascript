@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Compressor</title>
+</head>
+
+<body>
+  <script>
+    var allProperties = "";
+    onload = function () {
+      const css = document.createElement('style');
+      css.appendChild(document.createTextNode(sessionStorage.getItem("css")));
+      document.querySelector("head").appendChild(css);
+      const fileName = sessionStorage.getItem("fileName") || "Output.css";
+      let propertiesArray = [], groupProperties = [], singleSelectors = [], position;
+      for (const styleSheets of document.styleSheets)
+        for (const selectors of styleSheets.cssRules) {
+          if (selectors instanceof CSSStyleRule)
+            for (const rule of selectors.style.cssText.split(";")) {
+              [property, value] = rule.split(":");
+              if (property !== "")
+                propertiesArray.push({
+                  selector: selectors.selectorText,
+                  property: property.trim(),
+                  value: value.trim()
+                });
+            }
+          else
+            allProperties += selectors.cssText + "\n\n";
+        }
+      for (let i = 0; i < propertiesArray.length; i++) {
+        let propertyArrayI = propertiesArray[i], itemFound = false;
+        for (let j = i + 1; j < propertiesArray.length; j++) {
+          let propertyArrayJ = propertiesArray[j];
+          if (propertyArrayI.property === propertyArrayJ.property && propertyArrayI.value === propertyArrayJ.value) {
+            let isIncluded = false;
+            for (let k = 0; k < groupProperties.length; k++)
+              for (const currentGroupProperty of groupProperties[k].rule)
+                if (currentGroupProperty.property === propertyArrayI.property && currentGroupProperty.value === propertyArrayI.value) {
+                  isIncluded = true;
+                  position = k;
+                  break;
+                }
+            if (!isIncluded) {
+              groupProperties.push({
+                selector: [propertyArrayI.selector, propertyArrayJ.selector],
+                rule: [{
+                  property: propertyArrayJ.property,
+                  value: propertyArrayJ.value
+                }]
+              });
+              itemFound = true;
+            }
+            else
+              groupProperties[position].selector.push(propertyArrayJ.selector)
+            propertiesArray.splice(j--, 1)
+          }
+        }
+        if (itemFound)
+          propertiesArray.splice(i--, 1)
+      }
+      for (let i = 0; i < groupProperties.length; i++) {
+        let groupPropertyArrayI = groupProperties[i];
+        for (let j = i + 1; j < groupProperties.length; j++) {
+          let groupPropertyArrayJ = groupProperties[j];
+          if (JSON.stringify(groupPropertyArrayI.selector) === JSON.stringify(groupPropertyArrayJ.selector)) {
+            groupPropertyArrayI.rule.push(groupPropertyArrayJ.rule[0])
+            groupProperties.splice(j--, 1)
+          }
+        }
+      }
+      for (let i = 0; i < propertiesArray.length; i++) {
+        let propertiesArrayI = propertiesArray[i], itemFound = false;
+        for (let j = i + 1; j < propertiesArray.length; j++) {
+          let propertiesArrayJ = propertiesArray[j];
+          if (propertiesArrayI.selector === propertiesArrayJ.selector) {
+            let isIncluded = false;
+            for (let k = 0; k < singleSelectors.length; k++)
+              if (singleSelectors[k].selector === propertiesArrayI.selector) {
+                position = k;
+                isIncluded = true;
+                break;
+              }
+            if (!isIncluded) {
+              singleSelectors.push({
+                selector: propertiesArrayI.selector,
+                rule: [{
+                  property: propertiesArrayI.property,
+                  value: propertiesArrayI.value
+                },
+                {
+                  property: propertiesArrayJ.property,
+                  value: propertiesArrayJ.value
+                }]
+              })
+              itemFound = true;
+            }
+            else
+              singleSelectors[position].rule.push({
+                property: propertiesArrayJ.property,
+                value: propertiesArrayJ.value
+              })
+            propertiesArray.splice(j--, 1)
+          }
+        }
+        if (itemFound)
+          propertiesArray.splice(i--, 1)
+      }
+      for (const groupPropertyArrayI of groupProperties) {
+        allProperties += groupPropertyArrayI.selector.join(",") + "{\n";
+        printCSS(groupPropertyArrayI.rule);
+      }
+      for (const property of singleSelectors) {
+        allProperties += property.selector + "{\n";
+        printCSS(property.rule);
+      }
+      for (const singlePropertySelector of propertiesArray)
+        allProperties += singlePropertySelector.selector + "{\n" + singlePropertySelector.property + " : " + singlePropertySelector.value + "\n}\n\n";
+      let anchor = document.createElement("a");
+      anchor.download = fileName;
+      anchor.href = URL.createObjectURL(new Blob([allProperties], { type: 'text/css' }));
+      anchor.click();
+      close();
+    };
+    function printCSS(arrayList) {
+      for (const currentRule of arrayList)
+        allProperties += currentRule.property + " : " + currentRule.value + ";\n";
+      allProperties += "}\n\n";
+    }
+  </script>
+</body>
+
+</html>

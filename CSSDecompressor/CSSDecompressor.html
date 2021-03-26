@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Decompressor</title>
+</head>
+
+<body>
+  <script>
+    const css = document.createElement('style');
+    css.appendChild(document.createTextNode(sessionStorage.getItem("css")));
+    document.querySelector("head").appendChild(css);
+    const fileName = sessionStorage.getItem("fileName") || "Output.css";
+    let allProperties = "", propertiesArray = [], groupProperties = [];
+    for (const styleSheets of document.styleSheets)
+      for (const selectors of styleSheets.cssRules) {
+        if (selectors instanceof CSSStyleRule) {
+          for (const rule of selectors.style.cssText.split(";"))
+            if (rule !== "")
+              propertiesArray.push({
+                selector: selectors.selectorText,
+                rule: rule
+              });
+        }
+        else
+          allProperties += selectors.cssText + "\n\n";
+      }
+    for (const properties of propertiesArray)
+      for (const selector of properties.selector.split(",")) {
+        let isIncluded = false;
+        const trimmedSelector = selector.trim(), trimmedRule = properties.rule.trim();
+        for (const currentSelectorGroup of groupProperties) {
+          if (currentSelectorGroup.selector === trimmedSelector) {
+            currentSelectorGroup.rules.push(trimmedRule);
+            isIncluded = true;
+            break;
+          }
+        }
+        if (!isIncluded)
+          groupProperties.push({
+            selector: trimmedSelector,
+            rules: [trimmedRule]
+          });
+      }
+    for (const cssBlock of groupProperties) {
+      allProperties += cssBlock.selector + " {";
+      for (const singleProperty of cssBlock.rules)
+        allProperties += "\n" + singleProperty + ";";
+      allProperties += "\n}\n\n";
+    }
+    let anchor = document.createElement("a");
+    anchor.download = fileName;
+    anchor.href = URL.createObjectURL(new Blob([allProperties], { type: 'text/css' }));
+    anchor.click();
+    close();
+  </script>
+
+</body>
+
+</html>
